@@ -101,6 +101,178 @@ PS C:\Users\pthapliy> wsl -l -v
 PS C:\Users\pthapliy>
 -------------------------------------------------------
 -------------------------------------------------------
+ref: Using Multi-Node Clusters
+	https://minikube.sigs.k8s.io/docs/tutorials/multi_node/#hello-deployment.yaml
+
+wsl --import minikube-multi-node C:\Prasun\wslDistroStorage\minikube-multi-node\ C:\Prasun\wsl2-images\minikube-base.tar
+wsl -d minikube-multi-node
+
+
+minikube start --nodes 2 -p multinode-demo
+
+prasun@DESKTOP-V99LATL:~$ minikube start --nodes 2 -p multinode-demo
+😄  [multinode-demo] minikube v1.33.1 on Ubuntu 22.04 (amd64)
+✨  Automatically selected the docker driver
+📌  Using Docker driver with root privileges
+👍  Starting "multinode-demo" primary control-plane node in "multinode-demo" cluster
+🚜  Pulling base image v0.0.44 ...
+🔥  Creating docker container (CPUs=2, Memory=2200MB) ...
+🐳  Preparing Kubernetes v1.30.0 on Docker 26.1.1 ...
+    ▪ Generating certificates and keys ...
+    ▪ Booting up control plane ...
+    ▪ Configuring RBAC rules ...
+🔗  Configuring CNI (Container Networking Interface) ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+🌟  Enabled addons: storage-provisioner, default-storageclass
+
+👍  Starting "multinode-demo-m02" worker node in "multinode-demo" cluster
+🚜  Pulling base image v0.0.44 ...
+🔥  Creating docker container (CPUs=2, Memory=2200MB) ...
+🌐  Found network options:
+    ▪ NO_PROXY=192.168.58.2
+🐳  Preparing Kubernetes v1.30.0 on Docker 26.1.1 ...
+    ▪ env NO_PROXY=192.168.58.2
+🔎  Verifying Kubernetes components...
+💡  kubectl not found. If you need it, try: 'minikube kubectl -- get pods -A'
+🏄  Done! kubectl is now configured to use "multinode-demo" cluster and "default" namespace by default
+prasun@DESKTOP-V99LATL:~$
+-------------------------------------------------------
+minikube status -p multinode-demo
+-------------------------------------------------------
+This doesnt work
+	minikube kubectl -- get pods -A
+	You must specify the cluster name (or whatever that -p argument is :|)
+
+prasun@DESKTOP-V99LATL:~$ minikube -p multinode-demo kubectl -- get pods -A
+NAMESPACE     NAME                                     READY   STATUS    RESTARTS      AGE
+kube-system   coredns-7db6d8ff4d-jf4qj                 1/1     Running   4 (49m ago)   50m
+kube-system   etcd-multinode-demo                      1/1     Running   0             51m
+kube-system   kindnet-2r82s                            1/1     Running   0             50m
+kube-system   kindnet-jh886                            1/1     Running   0             50m
+kube-system   kube-apiserver-multinode-demo            1/1     Running   0             51m
+kube-system   kube-controller-manager-multinode-demo   1/1     Running   0             51m
+kube-system   kube-proxy-4z24q                         1/1     Running   0             50m
+kube-system   kube-proxy-k7jp9                         1/1     Running   0             50m
+kube-system   kube-scheduler-multinode-demo            1/1     Running   0             51m
+kube-system   storage-provisioner                      1/1     Running   1 (50m ago)   51m
+prasun@DESKTOP-V99LATL:~$
+-------------------------------------------------------
+-------------------------------------------------------
+-------------------------------------------------------
+prasun@DESKTOP-V99LATL:~$ minikube delete
+🔥  Deleting "minikube" in docker ...
+🔥  Deleting container "minikube" ...
+🔥  Removing /home/prasun/.minikube/machines/minikube ...
+💀  Removed all traces of the "minikube" cluster.
+prasun@DESKTOP-V99LATL:~$ minikube delete  -p multinode-demo
+🔥  Deleting "multinode-demo" in docker ...
+🔥  Deleting container "multinode-demo" ...
+🔥  Deleting container "multinode-demo-m02" ...
+🔥  Removing /home/prasun/.minikube/machines/multinode-demo ...
+🔥  Removing /home/prasun/.minikube/machines/multinode-demo-m02 ...
+💀  Removed all traces of the "multinode-demo" cluster.
+prasun@DESKTOP-V99LATL:~$
+-------------------------------------------------------
+-------------------------------------------------------
+This time I'll create the cluster without giving -p argument. Hopefully then rest of the commands should also not require -p
+And lets say, node count = 3
+So 2x3 = 6 GB RAM would be used in running this cluster (or maybe max 6 GB)
+
+prasun@DESKTOP-V99LATL:~$ minikube start --nodes 3
+😄  minikube v1.33.1 on Ubuntu 22.04 (amd64)
+✨  Automatically selected the docker driver
+📌  Using Docker driver with root privileges
+👍  Starting "minikube" primary control-plane node in "minikube" cluster
+🚜  Pulling base image v0.0.44 ...
+🔥  Creating docker container (CPUs=2, Memory=2200MB) ...
+❗  This container is having trouble accessing https://registry.k8s.io
+💡  To pull new external images, you may need to configure a proxy: https://minikube.sigs.k8s.io/docs/reference/networking/proxy/
+🐳  Preparing Kubernetes v1.30.0 on Docker 26.1.1 ...
+    ▪ Generating certificates and keys ...
+    ▪ Booting up control plane ...
+    ▪ Configuring RBAC rules ...
+🔗  Configuring CNI (Container Networking Interface) ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+🌟  Enabled addons: storage-provisioner, default-storageclass
+
+👍  Starting "minikube-m02" worker node in "minikube" cluster
+🚜  Pulling base image v0.0.44 ...
+🔥  Creating docker container (CPUs=2, Memory=2200MB) ...
+🌐  Found network options:
+    ▪ NO_PROXY=192.168.49.2
+❗  This container is having trouble accessing https://registry.k8s.io
+💡  To pull new external images, you may need to configure a proxy: https://minikube.sigs.k8s.io/docs/reference/networking/proxy/
+🐳  Preparing Kubernetes v1.30.0 on Docker 26.1.1 ...
+    ▪ env NO_PROXY=192.168.49.2
+🔎  Verifying Kubernetes components...
+
+👍  Starting "minikube-m03" worker node in "minikube" cluster
+🚜  Pulling base image v0.0.44 ...
+🔥  Creating docker container (CPUs=2, Memory=2200MB) ...
+🌐  Found network options:
+    ▪ NO_PROXY=192.168.49.2,192.168.49.3
+❗  This container is having trouble accessing https://registry.k8s.io
+💡  To pull new external images, you may need to configure a proxy: https://minikube.sigs.k8s.io/docs/reference/networking/proxy/
+🐳  Preparing Kubernetes v1.30.0 on Docker 26.1.1 ...
+    ▪ env NO_PROXY=192.168.49.2
+    ▪ env NO_PROXY=192.168.49.2,192.168.49.3
+🔎  Verifying Kubernetes components...
+💡  kubectl not found. If you need it, try: 'minikube kubectl -- get pods -A'
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+prasun@DESKTOP-V99LATL:~$
+-------------------------------------------------------
+minikube kubectl -- get pods -A
+
+prasun@DESKTOP-V99LATL:~$ minikube kubectl -- get pods -A
+NAMESPACE     NAME                               READY   STATUS    RESTARTS        AGE
+kube-system   coredns-7db6d8ff4d-dbtzr           1/1     Running   2 (3m50s ago)   4m21s
+kube-system   etcd-minikube                      1/1     Running   0               4m49s
+kube-system   kindnet-45s75                      1/1     Running   0               3m20s
+kube-system   kindnet-7mqb5                      1/1     Running   0               4m21s
+kube-system   kindnet-bkng8                      1/1     Running   0               4m10s
+kube-system   kube-apiserver-minikube            1/1     Running   0               4m49s
+kube-system   kube-controller-manager-minikube   1/1     Running   0               4m49s
+kube-system   kube-proxy-5bcwj                   1/1     Running   0               3m20s
+kube-system   kube-proxy-ghfhf                   1/1     Running   0               4m21s
+kube-system   kube-proxy-pxwnf                   1/1     Running   0               4m10s
+kube-system   kube-scheduler-minikube            1/1     Running   0               4m51s
+kube-system   storage-provisioner                1/1     Running   1 (3m50s ago)   4m48s
+prasun@DESKTOP-V99LATL:~$
+-------------------------------------------------------
+prasun@DESKTOP-V99LATL:~$ minikube kubectl get nodes
+NAME           STATUS   ROLES           AGE     VERSION
+minikube       Ready    control-plane   6m4s    v1.30.0
+minikube-m02   Ready    <none>          5m22s   v1.30.0
+minikube-m03   Ready    <none>          4m32s   v1.30.0
+prasun@DESKTOP-V99LATL:~$
+-------------------------------------------------------
+prasun@DESKTOP-V99LATL:~$ minikube status
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+
+minikube-m02
+type: Worker
+host: Running
+kubelet: Running
+
+minikube-m03
+type: Worker
+host: Running
+kubelet: Running
+
+prasun@DESKTOP-V99LATL:~$
+-------------------------------------------------------
+-------------------------------------------------------
+-------------------------------------------------------
+-------------------------------------------------------
+-------------------------------------------------------
+-------------------------------------------------------
 -------------------------------------------------------
 -------------------------------------------------------
 -------------------------------------------------------
