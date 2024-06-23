@@ -268,6 +268,26 @@ kubelet: Running
 
 prasun@DESKTOP-V99LATL:~$
 -------------------------------------------------------
+PS C:\Users\pthapliy> wsl --export minikube-multi-node C:\Prasun\wsl2-images\minikube-multi-node.tar
+Export in progress, this may take a few minutes.
+The operation completed successfully.
+PS C:\Users\pthapliy> dir C:\Prasun\wsl2-images\
+
+
+    Directory: C:\Prasun\wsl2-images
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----         6/23/2024   8:25 AM     5208719360 minikube-base.tar
+-a----         6/24/2024  12:09 AM     7044894720 minikube-multi-node.tar
+-a----         1/25/2024  10:26 AM           1302 ReadMe.txt
+-a----         1/25/2024   9:42 AM     1064407040 ubuntu-22.04-default.tar
+-a----         1/31/2024   3:46 PM     3232819200 ubuntu-22.04-dotnetdevcontainer.tar
+-a----          2/1/2024   8:04 PM           1760 zscalerRootCA.crt
+
+
+PS C:\Users\pthapliy>
 -------------------------------------------------------
 -------------------------------------------------------
 -------------------------------------------------------
